@@ -16,7 +16,22 @@ import re
 
 
 def convert_emphasis(text:str)->str:
-    pass 
+    text = re.sub(r'\*\*\*(.+?)\*\*\*', r'<em><strong>\1</strong></em>', text)
+    #print(f'after first bold sub text is {text}')
+    text = re.sub(r'(?<!\w)___(.+?)___(?!\w)', r'<em><strong>\1</strong></em>', text)
+    #print(f'after sub __ text is {text}')
+
+    text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+    #print(f'after first bold sub text is {text}')
+    text = re.sub(r'(?<!\w)__(.+?)__(?!\w)', r'<strong>\1</strong>', text)
+    #print(f'after sub __ text is {text}')
+
+
+    text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
+    text = re.sub(r'(?<!\w)_(.+?)_(?!\w)', r'<em>\1</em>', text)
+    #print(f'after substituting em text is {text}')
+
+    return text 
 
 def convert_paragraph(text:str)->str:
     pass 
