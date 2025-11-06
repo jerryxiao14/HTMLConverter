@@ -65,16 +65,56 @@ def convert_headings(text:str)->str:
         i+=1 
     return '\n'.join(result)
                 
-    pass 
-
 def convert_ordered_list(text: str)->str:
-    pass 
+    lines = text.split('\n')
+    result = []
+    
+    inside_list = 0 
+
+    for line in lines:
+        match = re.match(r'^\s*\d+\.\s+(.*)',line)
+        if match:
+            if not inside_list:
+                result.append('<ol>')
+                inside_list^=1
+            item = match.group(1).strip()
+            result.append(f'    <li>{item}</li>')
+        else:
+            if inside_list:
+                result.append('</ol>')
+                inside_list^=1 
+            result.append(line)
+    if inside_list:
+        result.append('</ol>')
+    
+    return '\n'.join(result)
 
 def convert_unordered_list(text: str)->str:
-    pass 
+    lines = text.split('\n')
+    result = []
+    inside_list = 0 
+
+    for line in lines:
+        match = re.match(r'^\s*[-\*+]\s+(.*)',line)
+        if match:
+            if not inside_list:
+                result.append('<ul>')
+                inside_list^=1 
+            item = match.group(1).strip()
+            result.append(f'    <li>{item}</li>')
+        else:
+            if inside_list:
+                result.append('</ul>')
+                inside_list^=1 
+            result.append(line)
+    if inside_list:
+        result.append('</ul>')
+    
+    return '\n'.join(result)
 
 def convert_code(text:str)->str:
-    pass 
+    text = re.sub(r'(`{1,2})(.+?)\1',r'<code>\2</code>')
+    return text
 
 def convert_link(text:str)->str:
     pass 
