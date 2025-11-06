@@ -117,7 +117,8 @@ def convert_code(text:str)->str:
     return text
 
 def convert_link(text:str)->str:
-    pass 
+    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
+    return text 
 
 def convert(text: str)->str:
     pass
