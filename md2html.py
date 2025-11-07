@@ -5,8 +5,6 @@ import re
 
 
 
-
-
 # Rules
 
 # 1. #, ##, ###, coresponds to <h1>, <h2>, etc
@@ -34,7 +32,32 @@ def convert_emphasis(text:str)->str:
     return text 
 
 def convert_paragraph(text:str)->str:
-    pass 
+    blocks = re.split(r'\n\s*\n', text)
+    print(f'blocks are {blocks}')
+    result = []
+
+    for block in blocks:
+        block = block.strip() 
+        if len(block)==0:
+            continue
+        print(f'block is {block}')
+        if re.match(r'^\s*<(h\d|ul|ol|li|p|/ul|/ol|/li)',block):
+            match = re.match(r'^\s*(<.*>.*</.*>)(.*)$', block, re.DOTALL)
+
+            if match:
+                html_part = match.group(1).strip()
+                rest = match.group(2).strip()
+                result.append(html_part)
+                if rest:
+                    rest = rest.replace('\n','<br>')
+                    result.append(f'<p>{rest}</p>')
+            else:
+                result.append(block)
+        else:
+            block = block.replace('\n','<br>')
+            result.append(f'<p>{block}</p>')
+
+    return '\n'.join(result)
 
 def convert_headings(text:str)->str:
     lines = text.split('\n')
