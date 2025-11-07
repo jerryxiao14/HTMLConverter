@@ -136,15 +136,28 @@ def convert_unordered_list(text: str)->str:
     return '\n'.join(result)
 
 def convert_code(text:str)->str:
-    text = re.sub(r'(`{1,2})(.+?)\1',r'<code>\2</code>')
+    text = re.sub(r'(`{1,2})(.+?)\1',r'<code>\2</code>',text)
     return text
 
 def convert_link(text:str)->str:
     text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
     return text 
 
-def convert(text: str)->str:
-    pass
+def convert(text: str) -> str:
+    text = convert_code(text)
+
+    text = convert_link(text)
+
+    text = convert_emphasis(text)
+
+    text = convert_headings(text)
+
+    text = convert_unordered_list(text)
+    text = convert_ordered_list(text)
+
+    text = convert_paragraph(text)
+
+    return text
 
 
 def main_script():
@@ -158,3 +171,23 @@ def main_script():
         out_file = sys.argv[2]
     else:
         raise Exception("Invalid number of arguments")
+    
+    try:
+        with open(in_file, 'r', encoding='utf-8') as f:
+            markdown_text = f.read()
+    except FileNotFoundError:
+        print(f"Error: file '{in_file}' not found.")
+        sys.exit(1)
+
+    # Convert Markdown to HTML
+    html_text = convert(markdown_text)
+
+    # Write the output HTML file
+    try:
+        with open(out_file, 'w', encoding='utf-8') as f:
+            f.write(html_text)
+        print(f"Successfully wrote HTML to '{out_file}'.")
+    except Exception as e:
+        print(f"Error writing file '{out_file}': {e}")
+        sys.exit(1)
+        
